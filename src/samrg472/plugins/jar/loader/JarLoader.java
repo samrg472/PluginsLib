@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class JarLoader<T> {
 
+    private boolean disposed = false;
     private URLClassLoader loader;
 
     private List<String> jars = new ArrayList<String>();
@@ -38,6 +39,8 @@ public class JarLoader<T> {
      * @throws FileNotFoundException jar cannot be located
      */
     public void load(File jar) throws FileNotFoundException {
+        if (disposed)
+            throw new IllegalStateException(JarLoader.class.getSimpleName() + " was disposed");
         if (jar == null)
             throw new NullArgumentException("jar");
         if (!jar.isFile())
@@ -56,6 +59,8 @@ public class JarLoader<T> {
      * Remove all instances of the plugin
      */
     public void destroyInstances() {
+        if (disposed)
+            throw new IllegalStateException(JarLoader.class.getSimpleName() + " was disposed");
         instances.clear();
     }
 
@@ -63,6 +68,8 @@ public class JarLoader<T> {
      * @return instances of the plugin class
      */
     public List<T> getInstances() {
+        if (disposed)
+            throw new IllegalStateException(JarLoader.class.getSimpleName() + " was disposed");
         return Collections.unmodifiableList(instances);
     }
 
@@ -73,6 +80,8 @@ public class JarLoader<T> {
      */
     @SuppressWarnings("unchecked")
     public T createInstance(String clazz) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        if (disposed)
+            throw new IllegalStateException(JarLoader.class.getSimpleName() + " was disposed");
         if (clazz == null)
             throw new NullArgumentException("clazz");
         T instance = (T) loader.loadClass(clazz).newInstance();
@@ -86,6 +95,9 @@ public class JarLoader<T> {
      * @throws IOException
      */
     public void destroy(boolean gc) throws IOException {
+        if (disposed)
+            return;
+        disposed = true;
         IOException e = null;
         try {
             loader.close();
@@ -100,5 +112,4 @@ public class JarLoader<T> {
         if (e != null)
             throw e;
     }
-
 }
