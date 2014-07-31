@@ -1,6 +1,11 @@
-apply plugin: 'java'
+apply from: "gradle/plugins.gradle"
 
+group = "org.directcode.samrg472"
+version = getProperty("pluginslib.version")
 sourceCompatibility = 1.7
+
+apply from: "gradle/general.gradle"
+apply from: "gradle/publish.gradle"
 
 task wrapper(type: Wrapper) {
     gradleVersion = "2.1-20140518220026+0000"

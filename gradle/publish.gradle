@@ -1,0 +1,48 @@
+artifacts {
+    archives jar
+    archives sourceJar
+    archives javadocJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
+            }
+
+            pom.project {
+                name 'PluginsLib'
+                packaging 'jar'
+                description 'Powerful Plugins Library for Java'
+                url 'http://github.com/samrg472/PluginsLib/'
+                scm {
+                    url 'scm:git@github.com:samrg472/PluginsLib.git'
+                    connection 'scm:git@github.com:samrg472/PluginsLib.git'
+                    developerConnection 'scm:git@github.com:samrg472/PluginsLib.git'
+
+                }
+                licenses {
+                    license {
+                        name 'BSD 3-Clause License'
+                        url 'http://opensource.org/licenses/BSD-3-Clause'
+                        distribution 'repo'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'samrg472'
+                        name 'Sam'
+                        email 'samrg472@gmail.com'
+                    }
+                }
+            }
+        }
+    }
+}
